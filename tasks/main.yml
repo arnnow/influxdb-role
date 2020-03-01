@@ -1,0 +1,25 @@
+---
+- name: Push InfluxDB Repository file
+  copy: src=etc/apt/sources.list.d/influxdb.list dest=/etc/apt/sources.list.d/influxdb.list owner=root group=root mode=0644
+  tags: ['influxdb']
+
+- name: Add Repo Key
+  shell: "curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -"
+  tags: ['influxdb']
+
+- name: APT Update
+  apt: update_cache=yes
+  tags: ['influxdb']
+
+- name: Install InfluxDB
+  apt: name=influxdb
+  tags: ['influxdb']
+
+- name: Push InfluxDB config
+  copy: src=etc/influxdb/influxdb.conf dest=/etc/influxdb/influxdb.conf 
+  notify:
+    - restart influx
+  tags: ['influxdb']
+
+- name: Ensure service is started
+  service: name=influxdb state=started

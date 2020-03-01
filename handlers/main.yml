@@ -1,0 +1,2 @@
+- name: restart influx
+  command: systemctl restart influxdb.service
